@@ -1,11 +1,9 @@
-import "./index.css";
+import "@/index.css";
 
 function App() {
   return (
     <>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p className="">Click on the Vite and React logos to learn more</p>
     </>
   );
 }
