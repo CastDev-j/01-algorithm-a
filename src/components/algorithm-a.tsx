@@ -69,12 +69,29 @@ const AlgorithmA = () => {
     });
   };
 
+  const parseLetterIndex = (id: string) => {
+    const match = id.match(/(\w)(\d+)-(\d+)/);
+    if (!match) return { charIndex: 0, repeat: 0 };
+    return {
+      charIndex: parseInt(match[2]),
+      repeat: parseInt(match[3]),
+    };
+  };
+
   const orderLetters = () => {
     const state = Flip.getState(".letter-box");
 
     flushSync(() => {
       setLetters((prev) => {
-        const ordered = [...prev].sort((a, b) => a.id.localeCompare(b.id));
+        const ordered = [...prev].sort((a, b) => {
+          const aParsed = parseLetterIndex(a.id);
+          const bParsed = parseLetterIndex(b.id);
+
+          if (aParsed.charIndex !== bParsed.charIndex) {
+            return aParsed.charIndex - bParsed.charIndex;
+          }
+          return aParsed.repeat - bParsed.repeat;
+        });
         return ordered.map((item, index) => ({
           ...item,
           position: index,
