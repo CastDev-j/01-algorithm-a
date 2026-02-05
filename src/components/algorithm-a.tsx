@@ -10,6 +10,7 @@ import { Flip } from "gsap/all";
 interface Letter {
   id: string;
   position: number;
+  initialPosition: number;
   letter: string;
 }
 
@@ -26,6 +27,7 @@ const generateLetters = ({ repeat, alphabet }: generateLettersProps) => {
       letters.push({
         id: `${char}${charIndex}-${i + 1}`,
         position: letters.length,
+        initialPosition: letters.length,
         letter: char,
       });
     }
@@ -69,29 +71,14 @@ const AlgorithmA = () => {
     });
   };
 
-  const parseLetterIndex = (id: string) => {
-    const match = id.match(/(\w)(\d+)-(\d+)/);
-    if (!match) return { charIndex: 0, repeat: 0 };
-    return {
-      charIndex: parseInt(match[2]),
-      repeat: parseInt(match[3]),
-    };
-  };
-
   const orderLetters = () => {
     const state = Flip.getState(".letter-box");
 
     flushSync(() => {
       setLetters((prev) => {
-        const ordered = [...prev].sort((a, b) => {
-          const aParsed = parseLetterIndex(a.id);
-          const bParsed = parseLetterIndex(b.id);
-
-          if (aParsed.charIndex !== bParsed.charIndex) {
-            return aParsed.charIndex - bParsed.charIndex;
-          }
-          return aParsed.repeat - bParsed.repeat;
-        });
+        const ordered = [...prev].sort(
+          (a, b) => a.initialPosition - b.initialPosition,
+        );
         return ordered.map((item, index) => ({
           ...item,
           position: index,
